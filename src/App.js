@@ -3,7 +3,7 @@ import React from 'react'
 import './App.css'
 
 import ListBooksComponent from './components/ListBooksComponent'
-import {getAll} from './BooksAPI'
+import {getAll, update} from './BooksAPI'
 
 const readBooks = [ 
   {title: "tst", authors: "Arun", imageUrl: 'url("http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")'},
@@ -11,6 +11,11 @@ const readBooks = [
   
 ]
 class BooksApp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this);
+  }
+
   state = {
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -25,11 +30,11 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
-    console.log("didmount")
-    getAll().then(data => {
-      console.log(data)
-      
+    this.reload()
+  }
 
+  reload() {
+    getAll().then(data => {
       this.setState((state, props) => ({
         readBooks: data.filter(book => book.shelf === "read"),
         currentlyReadingBooks: data.filter(book => book.shelf === "currentlyReading"),
@@ -71,19 +76,17 @@ class BooksApp extends React.Component {
             <div className="list-books-content">
               <div>
                 <div className="bookshelf">
-                  <ListBooksComponent books={this.state.currentlyReadingBooks} heading="Currently Reading"></ListBooksComponent>
+                  <ListBooksComponent books={this.state.currentlyReadingBooks} onClick={this.handleClick}  heading="Currently Reading"></ListBooksComponent>
                 </div>
 
                 <div className="bookshelf">
-                  <ListBooksComponent books={this.state.toReadBooks} heading="Want to read"></ListBooksComponent>
+                  <ListBooksComponent books={this.state.toReadBooks} onClick={this.handleClick}  heading="Want to read"></ListBooksComponent>
                 </div>
 
                 <div className="bookshelf">
-                  <ListBooksComponent books={this.state.readBooks} heading="Read"></ListBooksComponent>
+                  <ListBooksComponent books={this.state.readBooks} onClick={this.handleClick} heading="Read"></ListBooksComponent>
                 </div>
 
-                
-               
               </div>
             </div>
             
@@ -94,6 +97,17 @@ class BooksApp extends React.Component {
         )}
       </div>
     )
+  }
+
+  handleClick(e, book) {
+    e.preventDefault()
+    const moveToShelfName = e.target.value
+    console.log(`Moving book "${book.title}" to shelf: "${moveToShelfName}"`)
+    
+    update(book, moveToShelfName)
+    .then((data) => {
+      this.reload()
+    })
   }
 }
 

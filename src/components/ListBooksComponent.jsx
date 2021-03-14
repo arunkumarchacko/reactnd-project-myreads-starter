@@ -2,26 +2,29 @@ import React, {Component} from 'react'
 import BookComponent from './BookComponent'
 import PropTypes from "prop-types";
 
-function ListBooksComponent(props) {
-    return (
-        <div>
-            <div className="bookshelf">
-                <h2 className="bookshelf-title">{props.heading}</h2>
-                <div className="bookshelf-books">
-                    <ol className="books-grid">
-                        {
-                        props.books.map(book => {
-                            return (<li key={book.title}><BookComponent book={book}></BookComponent></li>)
-                        })}
-                    </ol>
+class ListBooksComponent extends Component {
+    render() {
+        return (
+            <div>
+                <div className="bookshelf">
+                    <h2 className="bookshelf-title">{this.props.heading}</h2>
+                    <div className="bookshelf-books">
+                        <ol className="books-grid">
+                            {
+                            this.props.books.map(book => {
+                                return (<li key={book.title} ><BookComponent book={book} onClick={this.props.onClick}></BookComponent></li>)
+                            })}
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 }
 
 ListBooksComponent.propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.array.isRequired,
+    onClick: PropTypes.func.isRequired
   };
 
 export default ListBooksComponent
