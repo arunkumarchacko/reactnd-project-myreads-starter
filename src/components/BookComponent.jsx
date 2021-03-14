@@ -1,7 +1,7 @@
 import React from 'react'
 
 function BookComponent(props) {
-    console.log( props)
+    // console.log( props)
     const theBook = props.book
     return (
         <div className="book">

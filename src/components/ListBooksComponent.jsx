@@ -12,7 +12,7 @@ class ListBooksComponent extends Component {
                         <ol className="books-grid">
                             {
                             this.props.books.map(book => {
-                                return (<li key={book.title} ><BookComponent book={book} onClick={this.props.onClick}></BookComponent></li>)
+                                return (<li key={book.id} ><BookComponent book={book} onClick={this.props.onClick}></BookComponent></li>)
                             })}
                         </ol>
                     </div>
