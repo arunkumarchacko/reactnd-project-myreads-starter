@@ -1,24 +1,27 @@
 import React, {Component} from 'react'
-import {search, update} from '../BooksAPI'
+import {search, update, getAll} from '../BooksAPI'
 import ListBooksComponent from './ListBooksComponent'
+import { Link } from "react-router-dom";
 
 class SearchComponent extends Component {
     constructor(props) {
         super(props)
         this.handleTextChange = this.handleTextChange.bind(this)
         this.handleClick = this.handleClick.bind(this);
+        this.updateCurrentBooks = this.updateCurrentBooks.bind(this)
     }
 
     state = {
         books: [],
-        searchTerm: ""
+        searchTerm: "",
+        bookStates: new Map()
     }
 
     render() {
         return (
             <div className="search-books">
             <div className="search-books-bar">
-              <button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>
+            <Link  className="close-search" to="/">Close</Link>
               <div className="search-books-input-wrapper">
                 <input type="text" placeholder="Search by title or author" onChange={this.handleTextChange}/>
 
@@ -26,7 +29,7 @@ class SearchComponent extends Component {
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                <ListBooksComponent books={this.state.books} onClick={this.handleClick}  heading="Search results"></ListBooksComponent>
+                <ListBooksComponent books={this.state.books} onClick={this.handleClick}  heading="Search results" bookStates={this.state.bookStates}></ListBooksComponent>
               </ol>
             </div>
           </div>
@@ -36,7 +39,6 @@ class SearchComponent extends Component {
     handleTextChange(e) {
         if(e.target.value) {
             this.setState({searchTerm: e.target.value}, () => this.runSearchQuery())
-            // this.runSearchQuery()
         }
         else {
             console.log("resetting state")
@@ -54,23 +56,37 @@ class SearchComponent extends Component {
         .then((data) => {
           this.runSearchQuery()
         })
+        .catch((error) => console.log(`Failed ${error}`))
       }
 
     runSearchQuery() {
-        search(this.state.searchTerm)
-        .then((data) => {
-            console.log(`Finished search of ${this.state.searchTerm}`)
-            console.log(data)
+        getAll()
+        .then(data => { 
+            this.updateCurrentBooks(data)
+            this.state.searchTerm && search(this.state.searchTerm)
+            .then(data => {
+                console.log(`Finished search of ${this.state.searchTerm}`)
+                console.log(data)
 
-            if(data.error) {
-                console.log("error")
-                this.setState({ books : data.items})
-            }
-            else {
-                this.setState({ books : data})
-            }
+                if(data.error) {
+                    console.log("error")
+                    this.setState({ books : data.items})
+                }
+                else {
+                    this.setState({ books : data})
+                }
+            })
         })
-      }
+    }
+
+    updateCurrentBooks(books) {
+        const theBookStates = new Map()
+        books.forEach(book => {
+            theBookStates.set(book.id, book.shelf)
+        })
+
+        this.setState({bookStates : theBookStates})
+    }
 }
 
 export default SearchComponent
