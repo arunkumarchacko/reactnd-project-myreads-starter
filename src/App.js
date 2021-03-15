@@ -12,6 +12,8 @@ class BooksApp extends React.Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this);
+    this.reload = this.reload.bind(this)
+    // this.setState = this.setState.bind(this);
   }
 
   state = {
@@ -24,9 +26,11 @@ class BooksApp extends React.Component {
     this.reload()
   }
 
+
   reload() {
+    console.log("reload called")
     getAll().then(data => {
-      console.log(data)
+      // console.log(data)
       this.setState((state, props) => ({
         readBooks: data.filter(book => book.shelf === "read"),
         currentlyReadingBooks: data.filter(book => book.shelf === "currentlyReading"),
@@ -43,7 +47,7 @@ class BooksApp extends React.Component {
       <div className="app">
           <div>
             <Route path='/search' render={({history}) => (
-              <SearchComponent></SearchComponent>
+              <SearchComponent onExit={this.reload}></SearchComponent>
             )} /> 
           </div>
 

@@ -21,7 +21,7 @@ class SearchComponent extends Component {
         return (
             <div className="search-books">
             <div className="search-books-bar">
-            <Link  className="close-search" to="/">Close</Link>
+            <Link  className="close-search" to="/" onClick={(e) => this.props.onExit()}>Close</Link>  
               <div className="search-books-input-wrapper">
                 <input type="text" placeholder="Search by title or author" onChange={this.handleTextChange}/>
 
@@ -37,6 +37,7 @@ class SearchComponent extends Component {
     }
 
     handleTextChange(e) {
+        // TODO: Add throttling
         if(e.target.value) {
             this.setState({searchTerm: e.target.value}, () => this.runSearchQuery())
         }
@@ -63,17 +64,22 @@ class SearchComponent extends Component {
         getAll()
         .then(data => { 
             this.updateCurrentBooks(data)
+
+            if(!this.state.searchTerm) {
+                this.setState({ books: []})
+            }
+
             this.state.searchTerm && search(this.state.searchTerm)
             .then(data => {
                 console.log(`Finished search of ${this.state.searchTerm}`)
-                console.log(data)
+                // console.log(data)
 
                 if(data.error) {
                     console.log("error")
                     this.setState({ books : data.items})
                 }
                 else {
-                    this.setState({ books : data})
+                    this.state.searchTerm && this.setState({ books : data})
                 }
             })
         })

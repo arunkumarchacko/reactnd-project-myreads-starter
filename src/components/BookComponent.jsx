@@ -24,7 +24,7 @@ function BookComponent(props) {
             </div>
         
             <div className="book-title">{props.book.title}</div>
-            <div className="book-authors">{props.book.authors.join(", ")}</div>
+           {props.book.authors && <div className="book-authors">{props.book.authors.join(", ")}</div> }
         </div>
     )
 }
