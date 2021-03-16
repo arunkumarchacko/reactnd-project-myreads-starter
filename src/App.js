@@ -1,5 +1,4 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 import ListBooksComponent from './components/ListBooksComponent'
@@ -13,7 +12,6 @@ class BooksApp extends React.Component {
     super(props)
     this.handleClick = this.handleClick.bind(this);
     this.reload = this.reload.bind(this)
-    // this.setState = this.setState.bind(this);
   }
 
   state = {
@@ -30,7 +28,6 @@ class BooksApp extends React.Component {
   reload() {
     console.log("reload called")
     getAll().then(data => {
-      // console.log(data)
       this.setState((state, props) => ({
         readBooks: data.filter(book => book.shelf === "read"),
         currentlyReadingBooks: data.filter(book => book.shelf === "currentlyReading"),

@@ -5,8 +5,6 @@ import PropTypes from "prop-types";
 class ListBooksComponent extends Component {
     
     render() {
-        // console.log(this.props)
-
         return (
             <div>
                 <div className="bookshelf">

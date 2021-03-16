@@ -72,7 +72,6 @@ class SearchComponent extends Component {
             this.state.searchTerm && search(this.state.searchTerm)
             .then(data => {
                 console.log(`Finished search of ${this.state.searchTerm}`)
-                // console.log(data)
 
                 if(data.error) {
                     console.log("error")
